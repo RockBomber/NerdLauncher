@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -62,11 +64,13 @@ public class NerdLauncherFragment extends Fragment {
 
         private ResolveInfo mResolveInfo;
         private TextView mNameTextView;
+        private ImageView mIconImageView;
 
-        public ActivityHolder(View itemView) {
-            super(itemView);
-            mNameTextView = (TextView) itemView;
-            mNameTextView.setOnClickListener(this);
+        public ActivityHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.activity_list_item, parent, false));
+            itemView.setOnClickListener(this);
+            mNameTextView = (TextView) itemView.findViewById(R.id.activity_name);
+            mIconImageView = (ImageView) itemView.findViewById(R.id.activity_icon);
         }
 
         public void bindActivity(ResolveInfo resolveInfo) {
@@ -74,6 +78,8 @@ public class NerdLauncherFragment extends Fragment {
             PackageManager pm = getActivity().getPackageManager();
             String appName = mResolveInfo.loadLabel(pm).toString();
             mNameTextView.setText(appName);
+            Drawable icon = mResolveInfo.loadIcon(pm);
+            mIconImageView.setImageDrawable(icon);
         }
 
         @Override
@@ -99,8 +105,7 @@ public class NerdLauncherFragment extends Fragment {
         @Override
         public ActivityHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-            return new ActivityHolder(view);
+            return new ActivityHolder(layoutInflater, parent);
         }
 
         @Override
